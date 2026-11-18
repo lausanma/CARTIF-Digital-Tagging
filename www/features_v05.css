@@ -1,0 +1,108 @@
+/* ===========================================================
+   ADDITIONAL FEATURES v0.5 - optional local presentation rules
+   Existing styles.css remains untouched.
+   =========================================================== */
+.dt-complete-card {
+  border-radius:7px; padding:16px 22px; margin:0 0 18px;
+  background:#6f9b8a; color:white;
+  box-shadow:0 3px 12px rgba(22,65,55,.10);
+}
+.dt-complete-title { font-weight:650; font-size:16px; }
+.dt-complete-percent { font-size:28px; font-weight:700; line-height:1.15; }
+.dt-complete-sub { font-size:12px; opacity:.95; margin:7px 0 12px; }
+.dt-complete-track { height:9px; background:rgba(255,255,255,.35); border-radius:10px;
+  width:100%; overflow:hidden; }
+.dt-complete-bar { background:white; height:100%; border-radius:10px; transition:width .25s ease; }
+.dt-complete-badges { display:flex; flex-wrap:wrap; gap:7px; margin-top:13px; }
+.dt-complete-chip { border:1px solid rgba(255,255,255,.65); border-radius:14px;
+  font-size:11px; padding:4px 9px; }
+.dt-complete-chip.is-missing { background:rgba(0,0,0,.12); opacity:.85; }
+.dt-record-manager { background:#f7faf9; border:1px solid #dbe9e5;
+  border-radius:7px; padding:12px 14px; margin-top:12px; }
+.dt-record-manager .form-group { max-width:650px; margin-bottom:9px; }
+.dt-record-manager .btn { margin-right:7px; margin-bottom:4px; }
+.dt-edit-notice { color:#265f55; background:#e8f5f1; border:1px solid #b7d8cf;
+  border-radius:6px; margin:8px 0; padding:10px 14px; }
+.dt-edit-notice .btn { margin-left:12px; }
+.dt-overview-counts { display:flex; gap:10px; flex-wrap:wrap; margin:8px 0 20px; }
+.dt-overview-stat { background:#f1f8f5; border:1px solid #d9e8e3;
+  border-radius:5px; flex:1 1 140px; padding:10px 12px; }
+.dt-overview-stat strong { display:block; font-size:22px; color:#276e61; }
+.dt-overview-stat span { display:block; font-size:11px; color:#53716b; }
+.dt-export-section { margin-top:22px; }
+.dt-export-section .box-body { padding:20px 22px; }
+.dt-export-section h4 { font-weight:650; color:#275c52; margin:12px 0; }
+.dt-small-note { margin-top:12px; font-size:11px; max-width:560px; }
+.dt-qr-preview { padding:9px 0 5px; }
+.dt-qr-preview .shiny-image-output img { max-width:100%; object-fit:contain; }
+.dt-qr-status { margin:10px 0; font-size:12px; color:#486960; }
+
+/* Main navigation: the existing category tabs remain inside Data Entry. */
+.dt-main-tabs > .tabbable > .nav-tabs {
+  display:flex; flex-wrap:wrap; gap:8px; padding:0 0 12px; margin:0 0 18px;
+  border-bottom:1px solid #cfe2dc;
+}
+.dt-main-tabs > .tabbable > .nav-tabs > li { float:none; margin:0; }
+.dt-main-tabs > .tabbable > .nav-tabs > li > a {
+  color:#35665d; background:#eaf3f0; border:1px solid #d0e4dc;
+  border-radius:6px; padding:11px 20px; margin:0; font-size:14px;
+  font-weight:650;
+}
+.dt-main-tabs > .tabbable > .nav-tabs > li > a:hover {
+  background:#dceee8; color:#1f655c;
+}
+.dt-main-tabs > .tabbable > .nav-tabs > li.active > a,
+.dt-main-tabs > .tabbable > .nav-tabs > li.active > a:focus,
+.dt-main-tabs > .tabbable > .nav-tabs > li.active > a:hover {
+  background:#287b70; border-color:#287b70; color:#fff;
+}
+.dt-section-intro { color:#58746d; margin:0 0 18px; font-size:13px; }
+.dt-table-scroll { max-width:100%; overflow-x:auto; }
+.dt-table-scroll .table { min-width:560px; }
+@media(max-width:767px) {
+ .dt-complete-card { padding:13px; }
+ .dt-overview-stat { flex-basis:115px; }
+ .dt-main-tabs > .tabbable > .nav-tabs > li > a { padding:10px 12px; font-size:12px; }
+}
+
+/* Refined context and export cards: readable type, deliberate spacing. */
+body, .content-wrapper { font-size:16px; line-height:1.5; }
+.form-group label, .form-control, .selectize-input, .selectize-dropdown,
+.btn, .table, .help-block, .dt-section-intro, .dt-small-note,
+.dt-context-state, .dt-record-manager, .dt-edit-notice,
+.dt-complete-sub, .dt-complete-chip, .dt-overview-stat span { font-size:16px; }
+.form-group label { margin-bottom:8px; }
+.btn { min-height:44px; padding:10px 18px; border-radius:8px; }
+.btn-success, .btn-success:hover, .btn-success:focus { color:#fff !important; }
+.btn:focus-visible, .form-control:focus-visible { outline:3px solid #79b8ac; outline-offset:3px; }
+.dt-context-clean { padding:28px; border-radius:12px; margin:8px 0 28px; }
+.dt-selection-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto; gap:24px; align-items:end; }
+.dt-context-clean .form-group { width:100%; margin:0; }
+.dt-context-clean .selectize-control { margin:0; }
+.dt-context-clean .form-control, .dt-context-clean .selectize-input { min-height:46px; }
+.dt-context-clean .selectize-input { display:flex; align-items:center; padding:10px 12px; }
+.dt-date-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:26px; }
+.dt-date-group { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; padding:20px; background:#f6faf9; border:1px solid #e0ece8; border-radius:10px; }
+.dt-context-actions { display:flex; align-items:center; flex-wrap:wrap; gap:14px; margin-top:26px; padding-top:22px; border-top:1px solid #e4eeeb; }
+.dt-saved-state { display:inline-flex; align-items:center; gap:8px; color:#246d5e; font-size:16px; }
+.dt-feedback .shiny-text-output:not(:empty) { margin-top:18px; padding:12px 16px; background:#edf6f3; border-radius:8px; color:#285e53; font-size:16px; overflow-wrap:anywhere; }
+.dt-tag-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:stretch; }
+.dt-tag-card { padding:26px; border:1px solid #dce9e5; border-radius:12px; background:#fbfdfc; }
+.dt-export-section .dt-tag-card h4 { margin:0 0 24px; font-size:20px; display:flex; align-items:center; gap:10px; }
+.dt-tag-actions { display:flex; flex-wrap:wrap; gap:14px; }
+.dt-tag-qr { display:flex; flex-direction:column; align-items:center; }
+.dt-export-section .dt-tag-qr h4 { align-self:flex-start; }
+.dt-tag-qr .dt-qr-preview { display:flex; flex-direction:column; align-items:center; gap:20px; padding:22px 0 0; }
+.dt-qr-preview .shiny-image-output { background:#fff; border-radius:8px; }
+.dt-main-tabs > .tabbable > .nav-tabs > li > a { font-size:17px; padding:13px 24px; }
+.dt-batch-locked { font-size:16px; padding:20px; margin-bottom:20px; }
+@media(max-width:1000px) { .dt-date-group { grid-template-columns:1fr; } }
+@media(max-width:767px) {
+ .dt-context-clean { padding:20px; }
+ .dt-selection-grid, .dt-date-grid, .dt-tag-grid { grid-template-columns:1fr; gap:20px; }
+ .dt-date-group { grid-template-columns:1fr; }
+ .dt-tag-card { padding:20px; }
+}
+
+/* Separate editing action from the search fields and feedback. */
+.dt-view-actions { margin-top:26px; padding-top:22px; border-top:1px solid #e4eeeb; display:flex; flex-wrap:wrap; gap:14px; }

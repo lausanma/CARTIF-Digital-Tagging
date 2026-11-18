@@ -1,0 +1,9 @@
+{
+  "note": "PROTOTYPE ONLY. A section counts as filled when it has at least one local record. This does not represent an agreed mandatory field list, an official KPI or DPP readiness. Confirm requirements with the pilots before using the percentage for validation.",
+  "pilots": {
+    "NAT": ["raw_materials", "production_process", "quality_control", "logistics", "sustainability"],
+    "FSK": ["raw_materials", "production_process", "quality_control", "logistics", "sustainability"],
+    "NOR": ["raw_materials", "production_process", "quality_control", "logistics", "sustainability"],
+    "GLB": ["raw_materials", "production_process", "quality_control", "logistics", "sustainability"]
+  }
+}

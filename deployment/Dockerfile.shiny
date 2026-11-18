@@ -1,0 +1,12 @@
+# Optional DEVELOPMENT container. Keep UI restricted to trusted users.
+FROM rocker/r-ver:4.4.2
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libcurl4-openssl-dev libssl-dev libpng-dev && \
+    rm -rf /var/lib/apt/lists/*
+COPY install_packages.R ./
+RUN Rscript install_packages.R
+COPY . ./
+ENV DIGITAL_TAGGING_APP_HOST=0.0.0.0 DIGITAL_TAGGING_APP_PORT=3838
+EXPOSE 3838
+CMD ["Rscript", "run_app.R"]

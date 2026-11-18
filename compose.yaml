@@ -1,0 +1,18 @@
+# Optional LOCAL Docker Compose. Only localhost exposed by default.
+services:
+  ui:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.shiny
+    ports:
+      - "127.0.0.1:3838:3838"
+    volumes:
+      - ./data/local:/app/data/local
+    restart: unless-stopped
+  api:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.api
+    ports:
+      - "127.0.0.1:8000:8000"
+    restart: unless-stopped

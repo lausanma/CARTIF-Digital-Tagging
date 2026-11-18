@@ -1,0 +1,37 @@
+BIOSPACE T4.3 - SEPARAR INTRODUCCION Y VISUALIZACION DE DATOS
+
+Este ZIP contiene el proyecto completo. Si ya usas la version
+v0.5.1 CORREGIDO y prefieres actualizarla, cierra la aplicacion,
+hace una copia de tu proyecto y sustituye estos archivos:
+
+  ui.R
+  server.R
+  www/features_v05.css
+  tests/ui_contract_test.R
+  tests/two_tabs_test.R              <- NUEVO
+
+No borres ni sustituyas tu carpeta data/local/: contiene los datos
+que hayas guardado. Tampoco necesitas sustituir config/pilots.json,
+styles.css, .Renviron ni los logos para este cambio.
+
+Para utilizar todo el proyecto en una carpeta nueva, sigue
+EMPIEZA_AQUI.txt y copia tus JSON antiguos a su carpeta data/local/.
+
+INICIAR EN RSTUDIO:
+  source("run_app.R")
+
+COMPROBAR:
+  1. Selecciona piloto e introduce Batch ID.
+  2. En Data Entry, introduce y guarda un registro.
+  3. En Data Visualization, comprueba que aparece en su tabla.
+  4. Seleccionalo y pulsa Edit selected. Se abre Data Entry con
+     sus datos; modificalos y pulsa Update record.
+  5. Vuelve a Data Visualization y comprueba el cambio.
+  6. Las funciones Download JSON y Preview QR siguen en la vista.
+
+Puedes ejecutar estas pruebas desde la carpeta del proyecto:
+  source("tests/ui_contract_test.R")
+  source("tests/two_tabs_test.R")
+
+La API QR es independiente. El almacenamiento sigue siendo local;
+la conexion a Process DT, Batch DT y DCOF sigue pendiente.

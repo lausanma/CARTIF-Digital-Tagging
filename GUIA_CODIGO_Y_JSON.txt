@@ -1,0 +1,247 @@
+CORRECCIÓN DE ESPACIADO
+======================
+Update information incluye margen superior directamente en ui.R.
+La referencia a CSS tiene nueva versión para evitar estilos en caché.
+No se modifica el funcionamiento ni la exportación de JSON.
+
+CORRECCIÓN: EXPORTACIÓN AL TERMINAR
+==================================
+Finish data entry ahora guarda automáticamente el JSON completo del batch
+(metadata y las cinco categorías) directamente en exports/.
+El archivo se llama DigitalTagging_<piloto>_<batch>_<fecha>_<sufijo>.json.
+Save batch prepara únicamente el JSON de T4.2 en exports/batch_requests/.
+Save JSON en Data Entry permite exportar el JSON completo antes de terminar.
+Los valores de formularios sin guardar no se incluyen: guardar cada registro
+antes de pulsar Finish data entry. Si se reabre y modifica, volver a finalizar
+para obtener una nueva exportación. Los archivos anteriores se conservan.
+Update information tiene una fila separada con margen superior.
+
+ACTUALIZACIÓN: ACCIONES DEL BATCH
+===============================
+Batch number es la etiqueta del número que introduce el usuario. Se conserva
+metadata.batch_id como clave local por compatibilidad con datos anteriores;
+metadata.batch_number identifica explícitamente el número de usuario al guardar.
+El ID técnico de MFT, cuando se resuelva, irá en metadata.external_batch_id.
+No se supone que número e ID técnico sean iguales.
+
+Save batch valida inicio, fin, Output amount (>=0) y Output unit (obligatorio).
+Guarda el contexto local y prepara exclusivamente este cuerpo:
+{ "start": "...", "end": "...", "outputAmount": 12, "outputUnit": "kg" }
+No incluye categorías, piloto ni batch number en ese cuerpo. Los identificadores
+se proporcionan al conector por separado para resolver el recurso de destino.
+Sin API configurada se crea un JSON en exports/batch_requests y se avisa
+expresamente de que NO se ha enviado. No hay reintentos ni envíos automáticos.
+Para conectar T4.2 se debe implementar options(digital_tagging.submit_batch_details
+= function(pilot_id, batch_number, internal_id, payload) { ... }).
+La función debe resolver el ID, usar método/URL/autenticación acordados,
+comprobar el resultado y devolver list(confirmed=TRUE) SOLO tras éxito real.
+Hay que confirmar el destino: el diagrama suministrado muestra finalize batch
+hacia Digital Tagging; por sí solo no especifica una llamada de escritura a T4.2.
+
+Finish data entry permite terminar con lo guardado, sin exigir que estén
+completas las cinco categorías. Solicita confirmar el cierre y bloquea edición.
+No guarda campos de formularios que aún no se hayan enviado con su botón.
+NO invoca createBatch ni finaliza el Batch DT. Update information reabre
+la edición, muestra los registros y permite usar Edit selected; no llama a T4.2.
+Tras editar, Update record guarda los cambios. Las fechas modificadas requieren
+Save batch. Data Visualization ya no tiene Save JSON; conserva Download JSON.
+Pruebas nuevas: tests/batch_actions_test.R (pendientes de ejecución en R).
+
+ACTUALIZACIÓN VISUAL
+===================
+Botones simplificados: Save batch, Search, Save JSON, Download JSON,
+Show QR y Download QR. Los mensajes de éxito son breves y no muestran rutas.
+Save JSON sigue guardando una copia en exports/ dentro del proyecto de R;
+Download JSON sigue siendo una descarga mediante el navegador.
+Los errores de lectura/guardado continúan mostrándose. Los textos técnicos
+sobre formato del JSON y contenido del QR se conservan en esta guía.
+Se han ampliado textos, espacios y tarjetas; Digital Tag presenta dos tarjetas:
+Batch data y QR code. No cambia la lógica de guardado o de conexiones.
+
+ACTUALIZACIÓN: QR LOCAL Y EXPORTACIÓN EN EL PROYECTO
+==================================================
+Show QR genera el código dentro de Shiny y lo muestra en pantalla.
+No hay que arrancar run_api.R ni abrir otra sesión. El QR contiene actualmente
+el Batch ID, no una URL ni todos los datos del lote. Download QR PNG lo descarga.
+Se conserva request_batch_qr para la API futura. Para activarla, antes de
+arrancar el dashboard, establecer:
+Sys.setenv(DIGITAL_TAGGING_QR_MODE = "api",
+           DIGITAL_TAGGING_QR_API_URL = "https://servidor-acordado")
+La URL anterior es solo un ejemplo. Por defecto QR_MODE es local.
+
+Se han retirado los visores JSON de la interfaz. En Data Entry y Visualization
+el botón Save JSON in project folder guarda una copia del lote seleccionado
+en exports/, dentro de la carpeta del proyecto R. Cada exportación crea un
+archivo nuevo y muestra su ruta. Solo exporta datos ya guardados o cargados,
+no los campos de un formulario pendientes de guardar.
+El botón Download JSON via browser permite además una descarga convencional.
+Al ejecutar en RStudio local, exports está en tu ordenador. Si en el futuro
+la aplicación se aloja en un servidor, exports estará en ese servidor.
+El guardado habitual de formularios sigue usando el repositorio configurado;
+la exportación es una copia, no modifica el origen ni la configuración de API.
+Prueba: source("tests/local_qr_export_test.R"). Pendiente de ejecutar en R.
+Las notas históricas siguientes sobre visores/API obligatoria ya no aplican.
+
+ACTUALIZACIÓN: CONSULTA DE CUALQUIER BATCH
+=======================================
+Las pestañas principales aparecen primero; debajo están los campos requeridos.
+En Data Visualization se seleccionan piloto y Batch ID y se pulsa
+Search / refresh batch. Al pasar desde Data Entry también se consulta el batch.
+No se requiere introducirlo previamente desde el dashboard ni confirmar fechas.
+La búsqueda usa read_batch_record y el adaptador de lectura configurado.
+Hoy consulta JSON locales. Cuando se implemente el conector real podrá leer
+Process DT u otras fuentes acordadas, traduciendo sus datos al modelo interno.
+No presupone que Process DT contenga por sí solo toda la información del batch.
+El adaptador podrá combinar varias fuentes por piloto, batch e intervalo.
+Si no existe, aparece Batch not found; si falla la conexión, aparece el error.
+Consultar no crea un lote vacío ni escribe datos. Al cambiar de batch se
+retiran los resultados anteriores. Las fechas del lote son informativas.
+Prueba de consulta externa simulada: source("tests/view_search_test.R").
+Esta prueba no requiere conexión real; su ejecución queda pendiente en RStudio.
+
+ACTUALIZACIÓN: CALENDARIO, VISUALIZACIÓN Y CONECTORES
+==================================================
+Data Entry: piloto + Batch ID + calendario de inicio/fin + hora seleccionable
+cada 15 minutos o editable (HH:MM o HH:MM:SS). Se usa UTC explícitamente.
+Hay que confirmar las fechas antes de guardar. Los datos manuales siguen
+perteneciendo al batch; la hora de cada variable es opcional.
+Data Visualization: piloto + Batch ID bastan para consultar/exportar los datos.
+Las fechas se muestran como información; no se pide confirmarlas para consultar.
+Para modificar/eliminar registros, primero confirmar fechas en Data Entry.
+
+R/data_access.R define la frontera de lectura/escritura mediante adaptadores.
+R/storage.R conserva el almacenamiento local y las funciones públicas
+load_batch_record / save_batch_record; server.R llama a estas funciones.
+El visor JSON muestra el registro devuelto después de un guardado correcto;
+con conectores externos será el documento canónico, no el cuerpo HTTP externo.
+
+Hoy solo funciona el adaptador local. config/adapter_example.R es una plantilla
+pendiente de implementar, NO una conexión a bi0SpaCE. No se han inventado URLs.
+Las variables DIGITAL_TAGGING_READ_ADAPTER y DIGITAL_TAGGING_WRITE_ADAPTER
+seleccionan por separado origen y destino (por defecto local).
+DIGITAL_TAGGING_ADAPTER_SCRIPT indica la ruta del script que registra conectores.
+Si un conector no está implementado o falla, se muestra error: no se guarda
+silenciosamente en local ni se anuncia éxito. No hay sincronización automática.
+
+Antes de activar una integración: acordar endpoints, autenticación, esquema,
+identificadores, unidades, permisos, versiones/conflictos y destino del tag.
+El lector debe combinar datos guardados y fuentes externas si son distintos;
+no sustituir datos manuales por una lectura incompleta. El escritor debe
+confirmar persistencia y devolver el registro canónico, o lanzar un error.
+Los mapeos a Process DT/DCOF se programarán según los contratos acordados.
+No se escribe automáticamente en Batch DT: se respeta Batch DT Creator.
+
+Pruebas nuevas: source("tests/data_access_test.R").
+Prueba manual: guardar un batch, reiniciar, seleccionar piloto/ID y abrir
+Data Visualization SIN confirmar fechas; comprobar tablas y exportaciones.
+Volver a Data Entry, confirmar fechas y comprobar guardar/editar/eliminar.
+No hay R en el entorno de edición: ejecución de Shiny pendiente en RStudio.
+
+La guía anterior a continuación describe los módulos y ejemplos generales;
+los antiguos campos ISO escritos a mano se sustituyen por calendario + hora.
+
+GUIA DEL CODIGO - DIGITAL TAGGING (actualizacion 06/11/2026)
+
+COMO USAR EL NUEVO FLUJO
+1. Selecciona piloto e introduce Batch ID, inicio y final.
+2. Fechas obligatorias en UTC: 2026-11-06T08:00:00Z.
+   Z significa UTC. No introduzcas una hora local anadiendo Z sin convertirla.
+3. Pulsa Confirm / save batch details. Se guarda el contexto y se habilitan
+   los formularios. El final debe ser estrictamente posterior al inicio.
+4. Guarda materiales, proceso, calidad, logistica o sostenibilidad.
+5. El panel JSON saved in the last operation muestra el JSON COMPLETO
+   leido del archivo guardado, no una simulacion. Se actualiza al confirmar
+   el batch, anadir, editar, borrar o importar materiales desde MFT.
+6. Cambiar ID, piloto o fechas bloquea las operaciones hasta confirmar.
+   Al seleccionar un lote existente se proponen sus fechas guardadas.
+   Los lotes antiguos sin fechas conservan sus datos: completa y confirma.
+
+QUE HACE CADA SCRIPT
+app.R: punto de entrada; localiza el proyecto, carga global/ui/server y crea Shiny.
+run_app.R: lanzador de la aplicacion desde RStudio.
+global.R: carga dependencias, modulos, configuracion y valores iniciales.
+ui.R: define campos, botones, dos pestanas principales y panel JSON.
+server.R: reacciona a botones, valida el contexto y monta registros de cada
+  categoria. get_current() impide guardar sin contexto confirmado;
+  batch_ready() controla el bloqueo; persist() guarda y actualiza el visor;
+  show_saved_json() lee los bytes del JSON que se acaba de escribir.
+R/utils.R: validacion de textos, numeros y fechas UTC, identificadores y tablas.
+R/storage.R: crea/carga/guarda el JSON local y anade/edita/borra registros.
+  set_batch_context() valida las fechas y actualiza metadata sin borrar categorias.
+R/config.R: lee pilotos, etapas, maquinas y parametros; activa categorias visibles.
+R/process_model.R: agrupa parametros en proceso > etapas > parametros o maquinas.
+  Es una representacion derivada para exportar; no escribe en Process DT.
+R/completeness.R: calcula presencia de categorias segun reglas configurables.
+R/api_client.R: consulta MFT si esta configurado e incorpora materiales sin duplicar
+  IDs externos. Los datos importados no se editan desde este dashboard.
+R/qr_service.R: cliente que pide un PNG a la API QR independiente.
+R/tagging.R: genera la imagen QR; su contenido actual es solo el ID del batch.
+R/digital_tag_logic.R: funciones auxiliares de exportacion prototipo y preparacion
+  de datos de finalizacion. No son el guardado habitual de las cinco categorias.
+api.R: API Plumber, health y generacion QR. Finalizacion real no implementada (501).
+run_api.R: arranca esa API en otro proceso.
+install_packages.R: instala las dependencias necesarias.
+COMPROBAR_ARCHIVOS.R: comprueba que se haya extraido la estructura completa.
+tests/*.R: comprobaciones de arranque, interfaz, datos y nuevo contexto obligatorio.
+config/pilots.json: catalogo editable de pilotos y etapas.
+config/completeness_rules.json: categorias usadas para calcular completitud.
+www/: estilos CSS y logotipos. deployment/ y compose.yaml: despliegue en contenedores.
+
+QUE JSON SE GUARDA
+Se mantiene UN archivo acumulativo por piloto y batch en data/local/.
+Para el ejemplo: NAT__NAT-DEMO-001.json.
+Cada Save reescribe ese documento con metadata + las cinco listas.
+No se genera un archivo independiente por cada boton ni se envia automaticamente
+el JSON a Process DT, Batch DT o DCOF.
+
+metadata.batch_id: identificador introducido por el usuario.
+metadata.batch_start / batch_end: limites del batch introducidos por el usuario.
+metadata.created_at / updated_at: instantes de creacion y guardado del documento.
+Son conceptos distintos: guardar a las 12:00 no cambia el final del batch.
+output_amount / output_unit siguen siendo opcionales y pueden ser null.
+status puede seguir siendo draft: confirmar los campos no finaliza un batch externo.
+
+CASOS Y EJEMPLOS
+examples/00_batch_confirmado.json: contexto con las cinco listas vacias.
+examples/01_raw_materials.json: se incorpora una materia prima.
+examples/02_production_process.json: se incorpora un parametro de proceso.
+examples/03_quality_control.json: se incorpora un control de calidad.
+examples/04_logistics.json: se incorpora un evento logistico.
+examples/05_sustainability.json: se incorpora un indicador.
+examples/06_editar_material.json: cambia amount; se conserva record_id y created_at,
+  y se anade updated_at al registro editado.
+examples/07_borrar_material.json: se elimina ese material; se conservan otras listas.
+Estos archivos son ejemplos DIDACTICOS, acumulativos, con IDs y horas ficticios.
+El panel del dashboard muestra tus valores reales y los UUID generados al guardar.
+Las fechas OPCIONALES de logistica o calidad pueden estar fuera del intervalo de produccion;
+esta actualizacion solo exige que los limites del batch sean validos y ordenados.
+
+EXPORTACIONES
+Download JSON: copia del registro completo, igual al formato de guardado local.
+Export process JSON: vista jerarquica calculada por build_process_model().
+Preview QR: envia {"batchId":"NAT-DEMO-001"} y recibe PNG, no el JSON del lote.
+
+PRUEBAS
+Desde la raiz en RStudio:
+source("tests/batch_context_test.R")
+source("tests/two_tabs_test.R")
+source("tests/ui_contract_test.R")
+En el entorno de entrega no esta instalado R; las pruebas de ejecucion deben
+realizarse en RStudio. Se han revisado el codigo y la estructura de los ejemplos.
+
+ACTUALIZACION: DATOS MANUALES POR BATCH
+Los datos manuales corresponden al batch seleccionado por defecto.
+Solo se piden ID, inicio y final al confirmar el batch.
+En proceso, calidad, logistica y sostenibilidad hay una casilla opcional:
+Add a specific measurement / event time. Sin marcarla, timestamp se guarda
+como null y time_scope como "batch". No se inventan horas de medicion.
+Si se marca, hay que introducir una fecha UTC valida y time_scope sera
+"measurement_or_event". Las horas internas created_at/updated_at siguen automaticas.
+La materia prima tiene time_scope "batch" y no necesita timestamp.
+Los registros antiguos con hora la conservan; al editarlos, la casilla aparece
+marcada. Desmarcarla elimina la hora de medicion del registro editado.
+El modelo de proceso exportado incluye batch_context con el intervalo del lote;
+los valores globales tienen time null. No se convierten en observaciones de sensor.
+examples/00 a 07 muestran ahora datos por batch sin hora de medicion.
+examples/08_medicion_con_hora_opcional.json muestra el caso opcional con hora.
+Prueba adicional: source("tests/batch_values_test.R").

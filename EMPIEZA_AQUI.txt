@@ -1,0 +1,33 @@
+bi0SpaCE T4.3 - DIGITAL TAGGING: DOS PESTANAS PRINCIPALES
+
+1. Descarga el ZIP COMPLETO y usa "Extraer todo" en Windows.
+2. Entra en la carpeta T43_Dashboard_Integrado_v0.5.1_CORREGIDO.
+3. Abre DigitalTagging_API_Demo.Rproj desde esa carpeta (doble clic).
+4. Comprueba que ves R/utils.R y config/pilots.json en el panel Files.
+5. En la consola de RStudio ejecuta:
+
+   source("install_packages.R")   # Solo si faltan paquetes
+   source("run_app.R")
+
+6. Introduce piloto, Batch ID, inicio y final UTC. Pulsa Confirm / save batch details.
+   Despues introduce datos en Data Entry. Abre GUIA_CODIGO_Y_JSON.txt.
+7. En Data Visualization consulta las tablas, exporta el JSON y,
+   si la API independiente esta activa, visualiza el codigo QR.
+8. Para modificar un registro, seleccionalo en Data Visualization
+   y pulsa Edit selected; guarda el cambio en el formulario que se abre.
+
+Si ya tienes registros en la version anterior, COPIA los archivos
+JSON del antiguo data/local/ al nuevo data/local/ ANTES de ejecutar.
+Nunca borres los JSON originales. La carpeta nueva esta vacia.
+
+La API de QR es INDEPENDIENTE y se inicia en otro RStudio.
+Para una API en el puerto 6730, ejecuta ANTES del dashboard:
+
+   Sys.setenv(DIGITAL_TAGGING_QR_API_URL = "http://127.0.0.1:6730")
+
+El dashboard guarda datos LOCALMENTE; no lee/escribe Process DT o
+Batch DT y no crea lotes reales. El indicador Tag Completeness
+continua siendo PROVISIONAL (no es un KPI oficial).
+
+DATOS POR BATCH: no introduzcas horas para cada variable. Activa la casilla
+opcional de fecha/hora solo para mediciones o eventos concretos.

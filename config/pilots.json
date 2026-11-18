@@ -1,0 +1,93 @@
+{
+  "note": "Editable initial process-step catalogue, based on the earlier prototype. Verify the names with each pilot before real deployment.",
+  "pilots": [
+    {
+      "id": "NAT",
+      "name": "Naturae",
+      "process_id": "NAT-local-process",
+      "steps": [
+        {
+          "id": "reception",
+          "name": "Raw material reception",
+          "machines": [],
+          "parameters": []
+        },
+        {
+          "id": "mixing",
+          "name": "Mixing",
+          "machines": [],
+          "parameters": []
+        },
+        {
+          "id": "bottling",
+          "name": "Bottling",
+          "machines": [],
+          "parameters": []
+        }
+      ]
+    },
+    {
+      "id": "FSK",
+      "name": "Fiskeby",
+      "process_id": "FSK-local-process",
+      "steps": [
+        {
+          "id": "pulping",
+          "name": "Pulp preparation",
+          "machines": [],
+          "parameters": []
+        },
+        {
+          "id": "forming",
+          "name": "Sheet forming",
+          "machines": [],
+          "parameters": []
+        },
+        {
+          "id": "drying",
+          "name": "Drying",
+          "machines": [],
+          "parameters": []
+        }
+      ]
+    },
+    {
+      "id": "NOR",
+      "name": "Noriware",
+      "process_id": "NOR-local-process",
+      "steps": [
+        {
+          "id": "premixing",
+          "name": "Premixing",
+          "machines": [],
+          "parameters": []
+        },
+        {
+          "id": "extrusion",
+          "name": "Extrusion",
+          "machines": [],
+          "parameters": []
+        }
+      ]
+    },
+    {
+      "id": "GLB",
+      "name": "GreenLab",
+      "process_id": "GLB-local-process",
+      "steps": [
+        {
+          "id": "energy_flow",
+          "name": "Energy and material flow",
+          "machines": [],
+          "parameters": []
+        },
+        {
+          "id": "storage",
+          "name": "Storage operation",
+          "machines": [],
+          "parameters": []
+        }
+      ]
+    }
+  ]
+}
